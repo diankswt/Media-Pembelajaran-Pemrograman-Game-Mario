@@ -1,0 +1,607 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Pemrograman Dasar X TKJ</title>
+<link rel="icon" type="image/png" href="Content/coderush.png" />
+<link href="Content/style.css" rel="stylesheet" />
+<style>
+@keyframes rankPulse {
+    0%,100% { opacity:1; }
+    50% { opacity:0.3; }
+}
+@keyframes rankSlideIn {
+    from { transform:translateX(20px); opacity:0; }
+    to   { transform:translateX(0);    opacity:1; }
+}
+@keyframes rankHighlight {
+    0%   { background:rgba(241,196,15,0.5); }
+    100% { background:transparent; }
+}
+.ranking-item {
+    display:flex; align-items:center; gap:4px;
+    padding:5px 6px; margin:2px 4px;
+    border-radius:6px; position:relative;
+    animation: rankSlideIn 0.3s ease;
+    transition: background 0.3s;
+}
+.ranking-item.is-me {
+    background:rgba(241,196,15,0.15);
+    border:1px solid rgba(241,196,15,0.4);
+}
+.ranking-item.rank-changed {
+    animation: rankHighlight 1s ease forwards;
+}
+.ranking-medal { font-size:10px; min-width:18px; text-align:center; }
+.ranking-nama  { font-size:0.28em; color:#eee; flex:1; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.ranking-nama.is-me { color:#f1c40f; }
+.ranking-poin  { font-size:0.28em; color:#f1c40f; font-weight:bold; min-width:22px; text-align:right; }
+#rankingSidebar::-webkit-scrollbar { width:3px; }
+#rankingSidebar::-webkit-scrollbar-thumb { background:#f1c40f55; border-radius:3px; }
+</style>
+</head>
+<body>
+
+<!-- START SCREEN -->
+<div id="startScreen">
+    <div id="startButtons">
+        <div>
+            <button class="circle-button" data-modal="modal-doc" title="Dokumen">📄</button>
+            <button class="circle-button" data-modal="modal-info" title="Info">ℹ️</button>
+        </div>
+        <div>
+            <button class="circle-button" data-modal="modal-sound" title="Suara">🔊</button>
+            <button class="circle-button" data-modal="modal-user" title="Profil">👤</button>
+        </div>
+    </div>
+    <h1>Pemrograman Dasar<span id="startSubtitle">[ Kelas X TKJ | FASE E Semester 2 ]</span></h1>
+    <button id="startButton">Mulai</button>
+</div>
+
+<!-- PILIH PERAN SCREEN -->
+<div id="roleScreen" style="display:none;">
+    <button class="btn-kembali" id="btnKembaliRole">&#8592; Kembali</button>
+    <div id="roleBox">
+        <div id="roleTitle">Pilih User</div>
+        <div id="roleButtons">
+            <div class="role-option">
+                <button class="role-button" id="btnGuru">👨‍🏫</button>
+                <div class="role-label">Guru</div>
+            </div>
+            <div class="role-option">
+                <button class="role-button" id="btnSiswa">👨‍🎓</button>
+                <div class="role-label">Siswa</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SELECTION SCREEN -->
+<div id="selectionScreen" style="display:none;">
+    <button class="btn-kembali" id="btnKembaliSelection">&#8592; Kembali</button>
+    <h1>Dunia Pembelajaran<br><span>Pemrograman Dasar</span></h1>
+    <div id="topicButtons">
+        <div class="topic">
+            <button class="topic-button branch" id="btnBranch">
+                <span class="play"></span>
+            </button>
+            <div class="topic-label">Percabangan</div>
+        </div>
+        <div class="topic">
+            <button class="topic-button loop" id="btnLoop">
+                <span class="play"></span>
+            </button>
+            <div class="topic-label">Perulangan</div>
+        </div>
+    </div>
+</div>
+
+<!-- LOGIN SISWA SCREEN -->
+<div id="nameInputScreen">
+    <div id="nameBox">
+        <button class="btn-kembali" id="btnKembaliLogin">&#8592; Kembali</button>
+        <div id="nameScreenTopic"></div>
+        <div id="nameQuestion">Login Siswa</div>
+        <input type="text" id="playerUsernameInput" placeholder="Username..." maxlength="50" autocomplete="off" />
+        <input type="password" id="playerPasswordInput" placeholder="Password..." maxlength="50" autocomplete="off" />
+        <p id="nameInputError">Username atau password salah!</p>
+        <button id="nameSubmitBtn">Masuk</button>
+    </div>
+</div>
+
+<!-- LOGIN GURU SCREEN -->
+<div id="guruLoginScreen" style="display:none;">
+    <div id="guruLoginBox">
+        <button class="btn-kembali" id="btnKembaliGuru">&#8592; Kembali</button>
+        <div id="guruLoginTitle">Login Guru</div>
+        <input type="text" id="guruUsernameInput" placeholder="Username..." maxlength="50" autocomplete="off" />
+        <input type="password" id="guruPasswordInput" placeholder="Password..." maxlength="50" autocomplete="off" />
+        <p id="guruLoginError">Username atau password salah!</p>
+        <button id="guruLoginBtn">Masuk</button>
+    </div>
+</div>
+
+<!-- DASHBOARD GURU -->
+<div id="guruDashboard" style="display:none;">
+    <div id="guruHeader">
+        <button id="btnPanduanGuru" title="Panduan Pengisian" style="
+    background:#7b7c83;color:#fff;border:2px solid #7b7c83;border-radius:20px;
+    padding:8px 18px;font-family:PS2P,sans-serif;font-size:0.6em;
+    cursor:pointer;white-space:nowrap;">Panduan Menu Guru</button>
+        <div id="guruWelcome" style="flex:1;text-align:center;"></div>
+        <button id="guruLogoutBtn">Keluar</button>
+    </div>
+
+    <div id="modalPanduan" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+    background:rgba(0,0,0,0.6);z-index:99999;align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:14px;width:520px;max-height:70vh;overflow-y:auto;
+        box-shadow:0 8px 32px rgba(0,0,0,0.35);display:flex;flex-direction:column;margin:auto;">
+            <div style="background:#2c3e50;border-radius:14px 14px 0 0;padding:14px 20px;
+                display:flex;justify-content:space-between;align-items:center;">
+                <div style="font-family:PS2P,sans-serif;font-size:0.65em;color:#fff;">📖 Panduan Guru</div>
+                <button id="btnTutupPanduan" style="background:none;border:none;color:#fff;font-size:1.4em;cursor:pointer;">✕</button>
+            </div>
+            <div style="padding:20px;font-family:PS2P,sans-serif;font-size:0.55em;color:#333;line-height:2;display:flex;flex-direction:column;gap:16px;">
+                <div style="background:#fef9ec;border-left:4px solid #f39c12;border-radius:0 8px 8px 0;padding:12px 14px;">
+                    <div style="color:#d68910;margin-bottom:6px;">📝 Kelola Soal</div>
+                    <div style="color:#555;font-size:0.95em;line-height:2;">
+                        • Pilih topik <b>Percabangan</b> atau <b>Perulangan</b><br>
+                        • Klik <b>Edit</b> pada soal yang ingin diisi<br>
+                        • Isi <b>Pertanyaan</b> dan minimal <b>4 pilihan jawaban</b> (A–D)<br>
+                        • Tentukan <b>jawaban benar</b> dan <b>pembahasan</b><br>
+                        • Centang <b>Aktifkan</b> agar soal muncul di game<br>
+                        • Klik <b>Simpan</b>
+                    </div>
+                </div>
+                <div style="background:#eaf6ff;border-left:4px solid #3498db;border-radius:0 8px 8px 0;padding:12px 14px;">
+                    <div style="color:#2980b9;margin-bottom:6px;">📚 Kelola Materi</div>
+                    <div style="color:#555;font-size:0.95em;line-height:2;">
+                        • Pilih topik dan subtopik yang ingin diisi<br>
+                        • Isi <b>Judul</b> dan <b>Isi Materi</b><br>
+                        • Materi tampil ke siswa saat menyentuh blok materi di game<br>
+                        • Centang <b>Aktifkan</b> agar materi muncul<br>
+                        • Klik <b>Simpan</b>
+                    </div>
+                </div>
+                <div style="background:#f0fff4;border-left:4px solid #27ae60;border-radius:0 8px 8px 0;padding:12px 14px;">
+                    <div style="color:#219a52;margin-bottom:6px;">👤 Kelola Siswa</div>
+                    <div style="color:#555;font-size:0.95em;line-height:2;">
+                        • Lihat daftar siswa yang terdaftar<br>
+                        • Tambah siswa baru dengan <b>nama</b> dan <b>password</b><br>
+                        • Hapus siswa jika diperlukan
+                    </div>
+                </div>
+                <div style="background:#fdf0ff;border-left:4px solid #9b59b6;border-radius:0 8px 8px 0;padding:12px 14px;">
+                    <div style="color:#8e44ad;margin-bottom:6px;">📊 Data Nilai</div>
+                    <div style="color:#555;font-size:0.95em;line-height:2;">
+                        • Lihat rekap nilai tiap siswa<br>
+                        • Data mencakup jumlah soal benar, total soal, dan persentase
+                    </div>
+                </div>
+                <div style="background:#fff3f3;border-left:4px solid #e74c3c;border-radius:0 8px 8px 0;padding:12px 14px;">
+                    <div style="color:#c0392b;margin-bottom:6px;">💻 Soal Compiler</div>
+                    <div style="color:#555;font-size:0.95em;line-height:2;">
+                        • Pilih topik <b>Percabangan</b> atau <b>Perulangan</b><br>
+                        • Klik <b>Edit</b> pada subtopik yang ingin diberi soal<br>
+                        • Isi <b>Judul</b>, <b>Instruksi</b>, dan <b>Kode Jawaban Guru</b> (VB.NET)<br>
+                        • Isi <b>Pembahasan</b> yang tampil ke siswa jika jawaban benar<br>
+                        • Atur <b>Waktu</b> pengerjaan (detik), lalu centang <b>Aktifkan</b><br>
+                        • Klik <b>Simpan</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="guruMenu">
+        <button class="guru-menu-btn active" data-panel="panel-soal">📝 Kelola Soal</button>
+        <button class="guru-menu-btn" data-panel="panel-materi">📚 Kelola Materi</button>
+        <button class="guru-menu-btn" data-panel="panel-siswa">👥 Kelola Siswa</button>
+        <button class="guru-menu-btn" data-panel="panel-nilai">📊 Data Nilai</button>
+        <button class="guru-menu-btn" data-panel="panel-compiler">💻 Soal Compiler</button>
+    </div>
+    <div id="guruContent">
+
+        <!-- PANEL SOAL -->
+        <div id="panel-soal" class="guru-panel">
+            <div class="panel-header">
+                <h3>Kelola Soal</h3>
+                <div style="display:flex;gap:8px;margin-bottom:12px;">
+                    <button class="soal-topik-btn active" data-topik="percabangan" onclick="switchTopikSoal('percabangan')">Percabangan</button>
+                    <button class="soal-topik-btn" data-topik="perulangan" onclick="switchTopikSoal('perulangan')">Perulangan</button>
+                </div>
+            </div>
+            <div id="soalList"></div>
+
+            <!-- Form edit soal -->
+            <div id="formSoal" style="display:none;">
+                <div id="formSoalJudul" style="font-weight:bold;margin-bottom:8px;font-family:PS2P,sans-serif;font-size:0.7em;">Edit Soal</div>
+                <input type="hidden" id="soalSlot" />
+                <input type="hidden" id="soalTopikHidden" />
+                <textarea id="soalPertanyaan" placeholder="Pertanyaan..."></textarea>
+                <div style="margin-bottom:6px;">
+                    <label style="font-family:PS2P,sans-serif;font-size:0.55em;color:#ccc;">A.</label>
+                    <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+                        <input type="text" id="soalA" placeholder="Pilihan A..." style="flex:1;">
+                        <input type="file" id="gambarSoalA" accept="image/*" style="font-size:0.5em;width:110px;">
+                    </div>
+                    <div id="previewGambarA" style="margin-top:2px;"></div>
+                    <input type="hidden" id="gambarSoalAFilename" value="">
+                </div>
+                    
+                <div style="margin-bottom:6px;">
+                    <label style="font-family:PS2P,sans-serif;font-size:0.55em;color:#ccc;">B.</label>
+                    <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+                        <input type="text" id="soalB" placeholder="Pilihan B..." style="flex:1;">
+                        <input type="file" id="gambarSoalB" accept="image/*" style="font-size:0.5em;width:110px;">
+                    </div>
+                    <div id="previewGambarB" style="margin-top:2px;"></div>
+                    <input type="hidden" id="gambarSoalBFilename" value="">
+                </div>
+
+                <div style="margin-bottom:6px;">
+                    <label style="font-family:PS2P,sans-serif;font-size:0.55em;color:#ccc;">C.</label>
+                    <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+                        <input type="text" id="soalC" placeholder="Pilihan C..." style="flex:1;">
+                        <input type="file" id="gambarSoalC" accept="image/*" style="font-size:0.5em;width:110px;">
+                    </div>
+                    <div id="previewGambarC" style="margin-top:2px;"></div>
+                    <input type="hidden" id="gambarSoalCFilename" value="">
+                </div>
+
+                <div style="margin-bottom:6px;">
+                    <label style="font-family:PS2P,sans-serif;font-size:0.55em;color:#ccc;">D.</label>
+                    <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+                        <input type="text" id="soalD" placeholder="Pilihan D..." style="flex:1;">
+                        <input type="file" id="gambarSoalD" accept="image/*" style="font-size:0.5em;width:110px;">
+                    </div>
+                    <div id="previewGambarD" style="margin-top:2px;"></div>
+                    <input type="hidden" id="gambarSoalDFilename" value="">
+                </div>
+                
+                <div style="margin-bottom:6px;">
+                    <label style="font-family:PS2P,sans-serif;font-size:0.55em;color:#ccc;">E.</label>
+                    <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+                        <input type="text" id="soalE" placeholder="Pilihan E..." style="flex:1;">
+                        <input type="file" id="gambarSoalE" accept="image/*" style="font-size:0.5em;width:110px;">
+                    </div>
+                    <div id="previewGambarE" style="margin-top:2px;"></div>
+                    <input type="hidden" id="gambarSoalEFilename" value="">
+                </div>
+                <div style="display:flex;flex-direction:column;gap:4px;">
+                    <label style="font-family:PS2P,sans-serif;font-size:0.6em;color:#555;">Pembahasan</label>
+                    <textarea id="soalPembahasan" rows="3" placeholder="Penjelasan jawaban yang benar..." style="width:100%;box-sizing:border-box;resize:vertical;"></textarea>
+                </div>
+                <select id="soalJawaban">
+                    <option value="a">A</option>
+                    <option value="b">B</option>
+                    <option value="c">C</option>
+                    <option value="d">D</option>
+                    <option value="e">E</option>
+                </select>
+                <div class="form-buttons">
+                    <button id="btnSimpanSoal">Simpan</button>
+                    <button id="btnBatalSoal">Batal</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL MATERI -->
+        <div id="panel-materi" class="guru-panel" style="display:none;">
+            <div class="panel-header">
+                <h3>Kelola Materi</h3>
+                <div style="display:flex;gap:8px;margin-bottom:12px;">
+                    <button class="materi-topik-btn active" data-topik="percabangan" onclick="switchTopikMateri('percabangan')">Percabangan</button>
+                    <button class="materi-topik-btn" data-topik="perulangan" onclick="switchTopikMateri('perulangan')">Perulangan</button>
+                </div>
+            </div>
+            <div id="materiSlotList"></div>
+
+            <div id="formMateri" style="display:none;">
+                <div id="formMateriJudul" style="font-weight:bold;margin-bottom:8px;font-family:PS2P,sans-serif;font-size:0.7em;">Edit Materi</div>
+                <input type="hidden" id="materiSlot" />
+                <input type="hidden" id="materiTopikHidden" />
+                <input type="text" id="materiJudul" placeholder="Judul materi..." />
+                <textarea id="materiIsi" placeholder="Isi materi..."></textarea>
+                <input type="text" id="materiVideoUrl" placeholder="URL YouTube (opsional)..." />
+                <div style="margin-top:8px;">
+                    <label style="font-family:PS2P,sans-serif;font-size:0.6em;color:#ccc;">Gambar (opsional):</label>
+                    <input type="file" id="materiGambar" accept="image/*" style="display:block;margin-top:4px;font-family:PS2P,sans-serif;font-size:0.6em;">
+                    <div id="materiGambarPreview" style="margin-top:8px;"></div>
+                    <input type="hidden" id="materiGambarFilename" value="">
+                </div>
+                <div class="form-buttons">
+                    <button id="btnSimpanMateri">Simpan</button>
+                    <button id="btnBatalMateri">Batal</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL SISWA -->
+        <div id="panel-siswa" class="guru-panel" style="display:none;">
+            <div class="panel-header">
+                <h3>Kelola Siswa</h3>
+                <button class="btn-tambah" id="btnTambahSiswa">+ Tambah Siswa</button>
+            </div>
+            <div id="siswaList"></div>
+
+            <div id="formSiswa" style="display:none;">
+                <div id="formSiswaJudul" style="font-weight:bold;margin-bottom:8px;font-family:PS2P,sans-serif;font-size:0.7em;">Tambah Siswa</div>
+                <input type="text" id="siswaNama" placeholder="Nama lengkap..." />
+                <input type="text" id="siswaUsername" placeholder="Username..." />
+                <input type="password" id="siswaPassword" placeholder="Password..." />
+                <small id="siswaPasswordNote" style="display:none;color:#888;font-family:PS2P,sans-serif;font-size:0.7em;">Kosongkan jika tidak ingin ubah password</small>
+                <div class="form-buttons">
+                    <button id="btnSimpanSiswa">Simpan</button>
+                    <button id="btnBatalSiswa">Batal</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL COMPILER -->
+        <div id="panel-compiler" class="guru-panel" style="display:none;">
+            <div class="panel-header">
+                <h3>Soal Compiler</h3>
+                <div style="display:flex;gap:8px;margin-bottom:12px;">
+                    <button class="soal-topik-btn active" data-topik="percabangan" onclick="switchTopikCompiler('percabangan')">Percabangan</button>
+                    <button class="soal-topik-btn" data-topik="perulangan" onclick="switchTopikCompiler('perulangan')">Perulangan</button>
+                </div>
+            </div>
+            <div id="compilerSoalList"></div>
+
+            <!-- FORM EDIT -->
+            <div id="formCompiler" style="display:none; margin-top:16px;">
+                <div id="formCompilerJudul" style="font-family:PS2P,sans-serif;font-size:0.7em;font-weight:bold;margin-bottom:14px;color:#8e44ad;">Edit Soal Compiler</div>
+
+                <input type="hidden" id="compilerSoalId" />
+                <input type="hidden" id="compilerTopik" />
+                <input type="hidden" id="compilerSubtopikVal" />
+
+                <!-- Baris 1: Judul -->
+                <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:12px;">
+                    <label style="font-family:PS2P,sans-serif;font-size:0.6em;color:#555;">Judul Soal</label>
+                    <input type="text" id="compilerJudul" placeholder="Judul soal..." style="width:100%;box-sizing:border-box;" />
+                </div>
+
+                <!-- Baris 2: Instruksi + Kode Jawaban (dua kolom) -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+                    <div style="display:flex;flex-direction:column;gap:4px;">
+                        <label style="font-family:PS2P,sans-serif;font-size:0.6em;color:#555;">Instruksi <span style="color:#aaa;font-size:0.85em;">(tampil di popup siswa)</span></label>
+                        <textarea id="compilerInstruksi" rows="6" placeholder="Contoh: Buatlah program yang mencetak Positif jika angka lebih dari 0..." style="width:100%;box-sizing:border-box;resize:vertical;"></textarea>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:4px;">
+                        <label style="font-family:PS2P,sans-serif;font-size:0.6em;color:#555;">Kode Jawaban Guru <span style="color:#aaa;font-size:0.85em;">(VB.NET)</span></label>
+                        <textarea id="compilerKodeJawaban" rows="6" placeholder="Module Program&#10;    Sub Main()&#10;        ' kode jawaban&#10;    End Sub&#10;End Module" style="width:100%;box-sizing:border-box;font-family:monospace;font-size:0.85em;background:#1e1e2e;color:#d4d4d4;border:1px solid #555;border-radius:6px;padding:8px;resize:vertical;"></textarea>
+                    </div>
+                </div>
+
+                <!-- Baris 3: Pembahasan + Waktu + Aktif (dua kolom) -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+                    <div style="display:flex;flex-direction:column;gap:4px;">
+                        <label style="font-family:PS2P,sans-serif;font-size:0.6em;color:#555;">Pembahasan <span style="color:#aaa;font-size:0.85em;">(ditampilkan ke siswa saat benar)</span></label>
+                        <textarea id="compilerPembahasan" rows="4" placeholder="Penjelasan solusi soal ini..." style="width:100%;box-sizing:border-box;resize:vertical;"></textarea>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:12px;">
+                        <div style="display:flex;flex-direction:column;gap:4px;">
+                            <label style="font-family:PS2P,sans-serif;font-size:0.6em;color:#555;">Waktu (detik)</label>
+                            <input type="number" id="compilerWaktu" value="600" min="60" max="3600" style="width:140px;" />
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-top:4px;">
+                            <input type="checkbox" id="compilerIsActive" style="width:18px;height:18px;cursor:pointer;" />
+                            <label for="compilerIsActive" style="font-family:PS2P,sans-serif;font-size:0.6em;color:#555;cursor:pointer;">Aktifkan soal ini</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-buttons">
+                    <button id="btnSimpanCompiler">Simpan</button>
+                    <button id="btnBatalCompiler">Batal</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PANEL NILAI -->
+<div id="panel-nilai" class="guru-panel" style="display:none;">
+    <div id="nilaiHeader" class="panel-header">
+        <h3>Data Nilai Siswa</h3>
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <button class="soal-topik-btn active" data-topik="percabangan" onclick="switchTopikNilai('percabangan')">Percabangan</button>
+            <button class="soal-topik-btn" data-topik="perulangan" onclick="switchTopikNilai('perulangan')">Perulangan</button>
+        </div>
+    </div>
+    <div id="nilaiList"></div>
+</div>
+    </div><!-- end guruContent -->
+</div><!-- end guruDashboard -->
+
+<!-- TIPS SCREEN -->
+<div id="tipsScreen" style="display:none;">
+    <div id="tipsBox">
+        <h2 id="tipsTitle">Tips Bermain</h2>
+        <div id="tipsContent">
+            <ol>
+                <li>Permainan Mario akan selesai jika Pemain menyelesaikan seluruh tantangan.</li>
+                <li>Pemain harus menemukan box berwarna emain harus menemukan box berwarna <img src="Content/box_example.png" style="width:20px;height:20px;vertical-align:middle;"> ungu, orange, dan biru untuk menyelesaikan tantangan yang ada.ungu box_materi.png, orange dan biruuntuk menyelesaikan tantangan yang ada.</li>
+                <li>Ketika pemain menyelesaikan tantangan dengan benar akan mendapatkan coin tambahan.</li>
+                <li>Jika pemain tidak bisa menyelesaikan tantangan, pemain tidak akan mendapatkan coin tambahan.</li>
+                <li>Pemain juga harus membunuh musuh agar dapat melewati jalan dengan lancar.</li>
+                <li>Pemain harus selalu cermat dalam mengerjakan tantangan yang telah disediakan.</li>
+                <li>Selamat Bermain!</li>
+            </ol>
+        </div>
+        <button id="tipsStartBtn">Mulai Permainan</button>
+    </div>
+</div>
+
+<!-- COUNTDOWN SCREEN -->
+<div id="countdownScreen" style="display:none;">
+    <div id="countdownNumber">3</div>
+</div>
+
+<!-- GAME WRAPPER: clips sidebar agar tidak keluar area game -->
+<div id="gameWrapper" style="display:none;">
+
+<!-- GAME -->
+<div id="game">
+    <div id="world"></div>
+    <div id="playerNameDisplay"></div>
+    <div id="coinNumber" class="gauge">0</div>
+    <div id="coin" class="gaugeSprite"></div>
+    <div id="liveNumber" class="gauge">0</div>
+    <div id="live" class="gaugeSprite"></div>
+</div>
+
+<!-- SIDEBAR RANKING - di dalam gameWrapper, tersembunyi di balik kanan -->
+<div id="rankingSidebar" style="
+    position:absolute; top:50px; right:-158px; width:155px;
+    background:linear-gradient(180deg,#1a0a2e 0%,#2d1b4e 100%);
+    border-left:3px solid #f1c40f;
+    z-index:9999; display:none; flex-direction:column;
+    font-family:PS2P,sans-serif; overflow:hidden;
+    transition: right 0.4s cubic-bezier(.4,0,.2,1);
+    bottom:0;
+">
+    <div style="background:linear-gradient(90deg,#f1c40f,#e67e22);padding:7px 6px 5px;text-align:center;flex-shrink:0;">
+        <div style="font-size:0.42em;color:#1a0a2e;letter-spacing:1px;">🏆 RANKING</div>
+        <div id="rankingTopikLabel" style="font-size:0.3em;color:#5a3000;margin-top:2px;">Percabangan</div>
+    </div>
+    <div id="rankingList" style="flex:1;overflow-y:auto;padding:4px 0;"></div>
+    <div style="text-align:center;padding:4px;font-size:0.25em;color:#f1c40f;flex-shrink:0;animation:rankPulse 2s infinite;">● LIVE</div>
+</div>
+
+<!-- TOGGLE BUTTON - di dalam gameWrapper -->
+<div id="rankingToggleBtn" style="
+    position:absolute; top:50%; right:0;
+    width:18px; height:56px; margin-top:-28px;
+    background:#f1c40f; border-radius:6px 0 0 6px; cursor:pointer; z-index:10000;
+    display:none; align-items:center; justify-content:center;
+    transition: right 0.4s cubic-bezier(.4,0,.2,1);
+    box-shadow:-2px 0 8px rgba(0,0,0,0.5);
+" title="Lihat Ranking">
+    <span id="rankingArrow" style="font-size:10px;color:#1a0a2e;">◀</span>
+</div>
+
+</div><!-- end gameWrapper -->
+
+<div class="modal" id="modal-doc">
+    <div class="modal-content">
+        <span class="close" data-modal="modal-doc">&times;</span>
+        <h2>Tujuan Pembelajaran</h2>
+        <table style="width:100%; border-collapse:collapse; margin-top:12px; font-size:0.55em;">
+            <thead>
+                <tr>
+                    <th style="border:2px solid #333 !important; padding:6px 8px; background:#c0392b; color:#fff; text-align:center; width:15%;">No.</th>
+                    <th style="border:2px solid #333 !important; padding:6px 8px; background:#c0392b; color:#fff; text-align:center;">Tujuan Pembelajaran</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border:1px solid #555 !important; padding:6px 8px; text-align:center; font-weight:bold; vertical-align:top; background:#fff; color:#222;">3.1</td>
+                    <td style="border:1px solid #555 !important; padding:6px 8px; text-align:justify; background:#fff; color:#222;">
+                        Peserta didik dapat mengidentifikasi sintaks dasar percabangan (if-then-else, select case) dan perulangan (for loop/while) dalam bahasa pemrograman prosedural.
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #555 !important; padding:6px 8px; text-align:center; font-weight:bold; vertical-align:top; background:#f0f0f0; color:#222;">3.2</td>
+                    <td style="border:1px solid #555 !important; padding:6px 8px; text-align:justify; background:#f0f0f0; color:#222;">
+                        Peserta didik dapat menginterpretasikan hasil eksekusi program percabangan (if-then-else, select case) dan perulangan (for loop/while).
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #555 !important; padding:6px 8px; text-align:center; font-weight:bold; vertical-align:top; background:#fff; color:#222;">3.3</td>
+                    <td style="border:1px solid #555 !important; padding:6px 8px; text-align:justify; background:#fff; color:#222;">
+                        Peserta didik dapat menerapkan struktur percabangan (if-then-else, select case) dan perulangan (for loop/while) pada compiler untuk menyelesaikan skenario pemrograman sederhana.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal" id="modal-info">
+    <div class="modal-content">
+        <span class="close" data-modal="modal-info">&times;</span>
+        <h2>Petunjuk Permainan</h2>
+        <p>Informasi tentang permainan dan cara bermain.</p>
+    </div>
+</div>
+
+<div class="modal" id="modal-sound">
+    <div class="modal-content">
+        <span class="close" data-modal="modal-sound">&times;</span>
+        <h2>Musik</h2>
+        <div style="display:flex; flex-direction:column; align-items:center; gap:16px; margin-top:10px;">
+            <p style="font-size:0.7em; text-align:center;">Atur musik latar permainan</p>
+            <div style="display:flex; align-items:center; gap:16px;">
+                <button id="musicOnBtn" onclick="setMusic(true)" style="
+                    background:#27ae60; color:#fff; border:none;
+                    border-radius:20px; padding:10px 24px;
+                    font-family:'PS2P'; font-size:0.7em;
+                    cursor:pointer; box-shadow:0 4px 0 #1a7a42;">
+                    🔊 ON
+                </button>
+                <button id="musicOffBtn" onclick="setMusic(false)" style="
+                    background:#e74c3c; color:#fff; border:none;
+                    border-radius:20px; padding:10px 24px;
+                    font-family:'PS2P'; font-size:0.7em;
+                    cursor:pointer; box-shadow:0 4px 0 #a00;">
+                    🔇 OFF
+                </button>
+            </div>
+            <p id="musicStatus" style="font-size:0.65em; color:#27ae60;">Musik: ON</p>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modal-user">
+    <div class="modal-content">
+        <span class="close" data-modal="modal-user">&times;</span>
+        <h2>Profil Pengembang</h2>
+
+    
+        <div style="display:flex; justify-content:center; margin:10px 0 16px;">
+            <div style="width:100px; height:100px; border-radius:50%; border:4px solid #c0392b; overflow:hidden; background:#ddd; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px rgba(0,0,0,0.25);">
+                <img id="profilePhoto"
+                    src="Content/profil_pengembang.jpeg"
+                    alt="Foto Profil"
+                    onerror="this.style.display='none'; document.getElementById('profilePhotoPlaceholder').style.display='flex';"
+                    style="width:100%; height:100%; object-fit:cover;" />
+                <div id="profilePhotoPlaceholder" style="display:none; align-items:center; justify-content:center; width:100%; height:100%; font-size:2.5em; color:#aaa;">👤</div>
+            </div>
+        </div>
+
+        <!-- Tabel profil -->
+        <table style="width:100%; border-collapse:collapse; font-size:0.55em;">
+            <tbody>
+                <tr>
+                    <td style="border:1px solid #555 !important; padding:6px 10px; font-weight:bold; background:#c0392b; color:#fff; width:35%;">Nama</td>
+                    <td style="border:1px solid #555 !important; padding:6px 10px; background:#fff; color:#222;">Tuti Dian Kusumawati</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #555 !important; padding:6px 10px; font-weight:bold; background:#c0392b; color:#fff;">NIM</td>
+                    <td style="border:1px solid #555 !important; padding:6px 10px; background:#f0f0f0; color:#222;">22050974095</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #555 !important; padding:6px 10px; font-weight:bold; background:#c0392b; color:#fff;">Prodi</td>
+                    <td style="border:1px solid #555 !important; padding:6px 10px; background:#fff; color:#222;">Pendidikan Teknologi Informasi</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #555 !important; padding:6px 10px; font-weight:bold; background:#c0392b; color:#fff;">Institusi</td>
+                    <td style="border:1px solid #555 !important; padding:6px 10px; background:#f0f0f0; color:#222;">Universitas Negeri Surabaya</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<iframe id="bgMusic" width="0" height="0" src="https://www.youtube.com/embed/SB1VqLCTFpA?rel=0&autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="Scripts/jQuery.js"><\/script>')</script>
+<script src="Scripts/oop.js"></script>
+<script src="Scripts/constants.js"></script>
+<script src="Scripts/keys.js"></script>
+<script src="Scripts/main.js"></script>
+<script src="Scripts/testlevels.js"></script>
+</body>
+</html>

@@ -1,0 +1,1070 @@
+﻿@font-face {
+   font-family: 'PS2P';
+   src: local('PressStart2P-Regular.'),
+        url('fonts/PressStart2P-Regular.ttf') format('truetype');
+   font-style: normal;
+}
+
+/* Wrapper yang mengurung game + sidebar, sama posisi & ukuran seperti game dulu */
+#gameWrapper {
+    position: absolute;
+    width: 640px;
+    height: 480px;
+    left: 50%;
+    top: 50%;
+    margin-left: -320px;
+    margin-top: -240px;
+    overflow: hidden;
+}
+
+#game {
+    position: absolute;
+    width: 640px;
+    height: 480px;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+}
+
+#startScreen {
+	position: absolute;
+	width: 640px;
+	height: 480px;
+	left: 50%;
+	top: 50%;
+	margin-left: -320px;
+	margin-top: -240px;
+	background-color: #6ecff6;
+	background-image: url('backgrounds/01.png');
+	background-size: cover;
+	background-position: center;
+	z-index: 2000;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-family: 'PS2P';
+}
+
+#startScreen h1 {
+	font-size: 1.8em;
+	color: #000;
+	margin-bottom: 20px;
+    text-align: center;
+}
+
+#startSubtitle {
+    display: block;
+    font-size: 0.4em;
+    color: #a0522d;
+    margin-top: 10px;
+    letter-spacing: 0.03em;
+    text-align: center;
+}
+
+#startButton {
+	background: #e74c3c;
+	color: #fff;
+	border: none;
+	padding: 15px 60px;
+	font-size: 1em;
+	font-family: 'PS2P';
+	border-radius: 25px;
+	cursor: pointer;
+}
+#startButton:hover {
+	background: #c0392b;
+}
+
+/* circular buttons at top */
+/* selection screen styles */
+#selectionScreen {
+    position: absolute;
+    width: 640px;
+    height: 480px;
+    left: 50%;
+    top: 50%;
+    margin-left: -320px;
+    margin-top: -240px;
+    background: #6ecff6;
+    background-image: url('backgrounds/01.png');
+    background-size: cover;
+    background-position: center;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'PS2P';
+}
+
+#selectionScreen h1 {
+    font-size: 1.8em;
+    color: #000;
+    text-align: center;
+    margin-bottom: 0;
+    line-height: 1.2;
+}
+
+#selectionScreen h1 span {
+    display: block;           /* ← penting: bikin subtitle turun ke baris baru */
+    font-size: 0.8em;
+    color: #a0522d;
+    margin-top: 8px;
+}
+
+#topicButtons {
+    display: flex;
+    gap: 80px;
+    margin-top: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+.topic {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.topic-button {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: none;
+    font-size: 2em;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.25);  /* ← shadow bawah biar keliatan 3D */
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.topic-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 rgba(0,0,0,0.25);
+}
+
+.topic-button:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.25);
+}
+
+.topic-button.branch {
+    background: radial-gradient(circle at 35% 35%, #f9d835, #e0a800);  /* ← gradient kuning */
+}
+
+.topic-button.loop {
+    background: radial-gradient(circle at 35% 35%, #f0913a, #c05e00);  /* ← gradient oranye */
+}
+
+.topic-button .play {
+    margin-left: 6px;
+    border-style: solid;
+    border-width: 12px 0 12px 22px;
+    border-color: transparent transparent transparent #ffffff;  /* ← segitiga play hijau */
+    width: 0;
+    height: 0;
+    background: none;
+    display: inline-block;
+    font-size: 1em;
+}
+
+.topic-label {
+    margin-top: 12px;
+    font-size: 1em;
+    font-weight: bold;
+    color: #e67e22;              /* ← warna oranye coklat */
+    letter-spacing: 0.03em;
+    font-family: 'PS2P';
+}
+
+/* circular buttons at top */
+#startButtons {
+	position: absolute;
+	top: 20px;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	padding: 0 15px;
+	box-sizing: border-box;
+}
+.circle-button {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	border: none;
+	background: #ffd700;
+	font-size: 1.5em;
+	cursor: pointer;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+.circle-button:hover {
+	background: #ffcc00;
+}
+
+/* modal styling */
+.modal {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 3000;
+	justify-content: center;
+	align-items: center;
+}
+
+.modal-content {
+	background: #fff;
+	padding: 40px;
+	border-radius: 20px;
+	border: 3px solid #e74c3c;   /* border merah */
+	width: 80%;
+	max-width: 500px;
+	position: relative;
+	font-family: 'PS2P';
+	text-align: center;
+}
+
+.modal-content h2 {
+	margin-top: 0;
+	color: #c8860a;              /* warna judul coklat keemasan */
+	font-size: 1.2em;
+	margin-bottom: 20px;
+}
+
+.modal-content p {
+	font-size: 0.7em;
+	line-height: 1.8;
+	text-align: left;
+	font-weight: bold;
+}
+
+.close {
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	font-size: 1.5em;
+	cursor: pointer;
+}
+
+#nameInputScreen {
+    display: none;
+    position: absolute;
+    width: 640px;
+    height: 480px;
+    left: 50%;
+    top: 50%;
+    margin-left: -320px;
+    margin-top: -240px;
+    background: #6ecff6;
+    background-image: url('backgrounds/01.png');
+    background-size: cover;
+    background-position: center;
+    z-index: 2500;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'PS2P';
+}
+#nameBox {
+    background: rgba(255,255,255,0.93);
+    border-radius: 24px;
+    padding: 36px 44px 32px;
+    text-align: center;
+    box-shadow: 0 8px 0 rgba(0,0,0,0.25);
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+#nameScreenTopic {
+    font-family: 'PS2P';
+    font-size: 0.8em;
+    color: #a0522d;
+}
+#nameQuestion {
+    font-family: 'PS2P';
+    font-size: 1.2em;
+    color: #222;
+}
+
+#playerUsernameInput,
+#playerPasswordInput {
+    width: 100%;
+    padding: 10px 16px;
+    border: 3px solid #f1c40f;
+    border-radius: 35px;
+    font-size: 0.8em;
+    font-family: 'PS2P';
+    box-sizing: border-box;
+    text-align: center;
+    background: #fffde7;
+    color: #333;
+    outline: none;
+}
+#playerUsernameInput:focus,
+#playerPasswordInput:focus {
+    border-color: #e67e22;
+}
+
+#nameInputError {
+    color: #e74c3c;
+    font-size: 0.75em;
+    margin: 0;
+    display: none;
+    font-family: 'PS2P';
+}
+#nameSubmitBtn {
+    margin-top: 6px;
+    background: #e67e22;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 32px;
+    font-family: 'PS2P';
+    font-size: 0.8em;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #a04000;
+}
+#nameSubmitBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 0 #a04000;
+}
+#nameSubmitBtn:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 #a04000;
+}
+
+#playerNameDisplay {
+    position: absolute;
+    top: 17px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'PS2P';
+    font-size: 1.2em;
+    color: #fff;
+    text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+    z-index: 1000;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+#tipsScreen {
+    display: none;
+    position: absolute;
+    width: 640px;
+    height: 480px;
+    left: 50%;
+    top: 50%;
+    margin-left: -320px;
+    margin-top: -240px;
+    background: #6ecff6;
+    background-image: url('backgrounds/01.png');
+    background-size: cover;
+    background-position: center;
+    z-index: 2500;
+    align-items: center;
+    justify-content: center;
+    font-family: 'PS2P';
+}
+#tipsBox {
+    background: rgba(255,255,255,0.95);
+    border-radius: 20px;
+    border: 3px solid #e8a0a0;
+    padding: 24px 32px;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    max-height: 440px;
+    overflow-y: auto;
+}
+#tipsTitle {
+    font-family: 'PS2P';
+    font-size: 1.4em;
+    color: #c8860a;
+    margin: 0;
+    text-align: center;
+}
+#tipsContent {
+    font-size: 0.68em;
+    color: #333;
+    line-height: 1.4;
+    text-align: left;
+    width: 100%;
+    font-family: 'PS2P';
+}
+#tipsContent ol {
+    padding-left: 20px;
+    margin: 0;
+}
+#tipsContent li {
+    margin: 6px 0;
+}
+#tipsStartBtn {
+    margin-top: 10px;
+    background: #d0a0a0;
+    color: #333;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 50px;
+    font-family: 'PS2P';
+    font-size: 0.85em;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #a07070;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+#tipsStartBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 0 #a07070;
+}
+#tipsStartBtn:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #a07070;
+}
+
+/* COUNTDOWN */
+#countdownScreen {
+    display: none;
+    position: absolute;
+    width: 640px;
+    height: 480px;
+    left: 50%;
+    top: 50%;
+    margin-left: -320px;
+    margin-top: -240px;
+    background: rgba(0,0,0,0.6);
+	background-image: url('backgrounds/01.png');
+	background-size: cover;
+    background-position: center;
+    z-index: 3000;
+    align-items: center;
+    justify-content: center;
+}
+#countdownNumber {
+    font-family: 'PS2P';
+    font-size: 8em;
+    color: #000000;
+    text-shadow: 4px 4px 0 #e74c3c;
+    animation: popIn 0.4s ease;
+}
+@keyframes popIn {
+    0%   { transform: scale(0.3); opacity: 0; }
+    70%  { transform: scale(1.2); }
+    100% { transform: scale(1);   opacity: 1; }
+}
+
+#world { 
+	margin: 0; padding: 0; height: 100%; width: 100%; position: absolute;
+	bottom: 0; left: 0; z-index: 0;
+}
+.gauge {
+	margin: 0; padding: 0; height: 50px; width: 70px; text-align: right; font-size: 2em;
+	font-weight: bold; position: absolute; top: 17px; right: 52px; z-index: 1000;
+	position: absolute; font-family: 'PS2P';
+}
+.gaugeSprite {
+	margin: 0; padding: 0; z-index: 1000; position: absolute;
+}
+#coinNumber {
+	left: 0;
+}
+#liveNumber {
+	right: 52px;
+}
+#coin {
+	height: 32px; width: 32px; background-image : url(mario-objects.png);
+	background-position: 0 0; top: 15px; left: 70px;
+}
+#live {
+	height: 40px; width: 40px; background-image : url(mario-sprites.png);
+	background-position : 0 -430px; top: 12px; right: 8px;
+}
+.figure {
+	margin: 0; padding: 0; z-index: 99; position: absolute;
+}
+.matter {
+	margin: 0; padding: 0; z-index: 95; position: absolute; width: 32px; height: 32px;
+}
+
+/* ===== ROLE SCREEN ===== */
+#roleScreen {
+    display: none;
+    position: absolute;
+    width: 640px;
+    height: 480px;
+    left: 50%;
+    top: 50%;
+    margin-left: -320px;
+    margin-top: -240px;
+    background: #6ecff6;
+    background-image: url('backgrounds/01.png');
+    background-size: cover;
+    background-position: center;
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    font-family: 'PS2P';
+}
+#roleBox {
+    background: rgba(255,255,255,0.93);
+    border-radius: 24px;
+    padding: 36px 44px;
+    text-align: center;
+    box-shadow: 0 8px 0 rgba(0,0,0,0.25);
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+#roleTitle {
+    font-family: 'PS2P';
+    font-size: 1.2em;
+    color: #222;
+}
+#roleButtons {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+}
+.role-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.role-button {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: none;
+    font-size: 2.5em;
+    cursor: pointer;
+    background: radial-gradient(circle at 35% 35%, #f9d835, #e0a800);
+    box-shadow: 0 6px 0 rgba(0,0,0,0.25);
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+.role-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 rgba(0,0,0,0.25);
+}
+.role-button:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 rgba(0,0,0,0.25);
+}
+.role-label {
+    font-family: 'PS2P';
+    font-size: 0.8em;
+    color: #e67e22;
+    font-weight: bold;
+}
+
+/* ===== GURU LOGIN SCREEN ===== */
+#guruLoginScreen {
+    display: none;
+    position: absolute;
+    width: 640px;
+    height: 480px;
+    left: 50%;
+    top: 50%;
+    margin-left: -320px;
+    margin-top: -240px;
+    background: #6ecff6;
+    background-image: url('backgrounds/01.png');
+    background-size: cover;
+    background-position: center;
+    z-index: 2500;
+    align-items: center;
+    justify-content: center;
+    font-family: 'PS2P';
+}
+#guruLoginBox {
+    background: rgba(255,255,255,0.93);
+    border-radius: 24px;
+    padding: 36px 44px;
+    text-align: center;
+    box-shadow: 0 8px 0 rgba(0,0,0,0.25);
+    width: 360px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+#guruLoginTitle {
+    font-family: 'PS2P';
+    font-size: 1.2em;
+    color: #222;
+    margin-bottom: 6px;
+}
+#guruUsernameInput,
+#guruPasswordInput {
+    width: 100%;
+    padding: 10px 16px;
+    border: 3px solid #f1c40f;
+    border-radius: 35px;
+    font-size: 0.8em;
+    font-family: 'PS2P';
+    box-sizing: border-box;
+    text-align: center;
+    background: #fffde7;
+    color: #333;
+    outline: none;
+}
+#guruUsernameInput:focus,
+#guruPasswordInput:focus {
+    border-color: #e67e22;
+}
+#guruLoginError {
+    color: #e74c3c;
+    font-size: 0.7em;
+    margin: 0;
+    display: none;
+    font-family: 'PS2P';
+}
+#guruLoginBtn {
+    margin-top: 6px;
+    background: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 32px;
+    font-family: 'PS2P';
+    font-size: 0.8em;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #1a6a9a;
+}
+#guruLoginBtn:hover { transform: translateY(-2px); }
+#guruLoginBtn:active { transform: translateY(4px); }
+
+/* ===== GURU DASHBOARD ===== */
+#guruDashboard {
+    display: none;
+    position: absolute;
+    width: 640px;
+    height: 480px;
+    left: 50%;
+    top: 50%;
+    margin-left: -320px;
+    margin-top: -240px;
+    background: #f5f5f5;
+    z-index: 2500;
+    flex-direction: column;
+    font-family: 'PS2P';
+    overflow: hidden;
+}
+#guruHeader {
+    background: #2c3e50;
+    color: #fff;
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.6em;
+}
+#guruLogoutBtn {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 6px 14px;
+    font-family: 'PS2P';
+    font-size: 0.9em;
+    cursor: pointer;
+}
+#guruMenu {
+    display: flex;
+    background: #34495e;
+    gap: 2px;
+    padding: 6px 8px;
+}
+.guru-menu-btn {
+    flex: 1;
+    background: #4a6278;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 4px;
+    font-family: 'PS2P';
+    font-size: 0.45em;
+    cursor: pointer;
+}
+.guru-menu-btn.active,
+.guru-menu-btn:hover {
+    background: #e67e22;
+}
+#guruContent {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+}
+.guru-panel h3 {
+    font-size: 0.7em;
+    color: #2c3e50;
+    margin: 0 0 10px;
+}
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.btn-tambah {
+    background: #27ae60;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 6px 12px;
+    font-family: 'PS2P';
+    font-size: 0.5em;
+    cursor: pointer;
+}
+.guru-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.5em;
+}
+
+.guru-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #ddd;
+    background: #fff;
+    vertical-align: middle;
+    line-height: 1.7;
+}
+.guru-table th {
+    background: #2c3e50;
+    color: #fff;
+    padding: 10px 12px;
+    text-align: left;
+}
+.guru-table td:first-child,
+.guru-table th:first-child {
+    width: 30px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.btn-edit {
+    background: #f39c12;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-family: 'PS2P';
+    font-size: 0.9em;
+    cursor: pointer;
+    margin-right: 4px;
+}
+.btn-hapus {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-family: 'PS2P';
+    font-size: 0.9em;
+    cursor: pointer;
+}
+#formSoal, #formMateri, #formSiswa {
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.55em;
+}
+#formSoal input, #formSoal select, #formSoal textarea,
+#formMateri input, #formMateri select, #formMateri textarea,
+#formSiswa input {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid #f1c40f;
+    border-radius: 8px;
+    font-family: 'PS2P';
+    font-size: 1em;
+    box-sizing: border-box;
+}
+#formSoal textarea, #formMateri textarea {
+    height: 70px;
+    resize: none;
+}
+.form-buttons {
+    display: flex;
+    gap: 8px;
+}
+.form-buttons button {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'PS2P';
+    font-size: 1em;
+    cursor: pointer;
+}
+.form-buttons button:first-child { background: #27ae60; color: #fff; }
+.form-buttons button:last-child { background: #e74c3c; color: #fff; }
+
+/* ===================================
+   TOMBOL KEMBALI
+   =================================== */
+.btn-kembali {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-family: 'PS2P';
+    font-size: 0.5em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #7b1a10;
+    z-index: 100;
+    transition: all 0.1s;
+}
+
+.btn-kembali:hover {
+    background: #e74c3c;
+}
+
+.btn-kembali:active {
+    box-shadow: 0 2px 0 #7b1a10;
+    transform: translateY(2px);
+}
+
+/* ===== SOAL POPUP ===== */
+#soalPopup {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#soalBox {
+    background: #fff;
+    border-radius: 16px;
+    border: 3px solid #e8a0a0;
+    padding: 20px 24px;
+    width: 500px;
+    max-height: 440px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-family: 'PS2P';
+    box-sizing: border-box;
+}
+
+#soalNomor {
+    font-size: 0.55em;
+    color: #aaa;
+    text-align: right;
+}
+#soalPertanyaan {
+    font-size: 0.65em;
+    color: #222;
+    line-height: 1.6;
+}
+#soalPilihan {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.soal-btn {
+    background: #fffde7;
+    border: 2px solid #f1c40f;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-family: 'PS2P';
+    font-size: 0.55em;
+    text-align: left;
+    cursor: pointer;
+}
+.soal-btn:hover { background: #fff3b0; }
+.soal-btn:disabled { cursor: default; }
+#soalFeedback {
+    font-size: 0.65em;
+    text-align: center;
+    min-height: 20px;
+}
+
+.materi-topik-btn {
+    padding: 6px 16px;
+    border: 1px solid #c0392b;
+    background: #fff;
+    color: #c0392b;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: PS2P, sans-serif;
+    font-size: 0.6em;
+}
+.materi-topik-btn.active {
+    background: #c0392b;
+    color: #fff;
+}
+
+.soal-topik-btn {
+    padding: 6px 16px;
+    border: 1px solid #c0392b;
+    background: #fff;
+    color: #c0392b;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: PS2P, sans-serif;
+    font-size: 0.6em;
+}
+.soal-topik-btn.active {
+    background: #c0392b;
+    color: #fff;
+}
+
+/* ===== COMPILER BOX POPUP ===== */
+#compilerPopupOverlay {
+    position: absolute;
+    top: 0; left: 0;
+    width: 640px; height: 480px;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#compilerPopupBox {
+    background: #1e1e2e;
+    border-radius: 14px;
+    border: 3px solid #27ae60;
+    padding: 18px 20px;
+    width: 580px;
+    max-height: 460px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+#compilerPopupJudul {
+    font-size: 0.65em;
+    color: #2ecc71;
+    font-family: PS2P, sans-serif;
+    text-align: center;
+    margin-bottom: 2px;
+}
+#compilerPopupInstruksi {
+    font-size: 0.5em;
+    color: #ecf0f1;
+    font-family: PS2P, sans-serif;
+    line-height: 1.8;
+    background: #2d2d3f;
+    border-radius: 8px;
+    padding: 8px 10px;
+    max-height: 80px;
+    overflow-y: auto;
+}
+#compilerLangSelect {
+    font-family: PS2P, sans-serif;
+    font-size: 0.55em;
+    background: #2d2d3f;
+    color: #ecf0f1;
+    border: 1px solid #27ae60;
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    align-self: flex-start;
+}
+#compilerCodeArea {
+    font-family: 'Courier New', monospace;
+    font-size: 0.78em;
+    background: #12121f;
+    color: #a8ff78;
+    border: 1px solid #27ae60;
+    border-radius: 8px;
+    padding: 10px;
+    resize: none;
+    height: 130px;
+    width: 100%;
+    box-sizing: border-box;
+    outline: none;
+}
+#compilerOutput {
+    font-family: 'Courier New', monospace;
+    font-size: 0.72em;
+    background: #0d0d1a;
+    color: #f1c40f;
+    border: 1px solid #555;
+    border-radius: 8px;
+    padding: 8px 10px;
+    min-height: 40px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+#compilerBtnRow {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 2px;
+}
+.compiler-btn {
+    background: #27ae60;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 7px 20px;
+    font-family: PS2P, sans-serif;
+    font-size: 0.55em;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #1a7a42;
+}
+.compiler-btn:hover { background: #2ecc71; }
+.compiler-btn.tutup-btn {
+    background: #c0392b;
+    box-shadow: 0 3px 0 #7b241c;
+}
+.compiler-btn.tutup-btn:hover { background: #e74c3c; }
+.compiler-btn:disabled {
+    background: #555;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+/* ===== END COMPILER BOX POPUP ===== */
+
+#soalActionRow {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 8px;
+}
+.soal-action-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-family: PS2P, sans-serif;
+    font-size: 0.5em;
+    cursor: pointer;
+}
+.next-btn {
+    background: #27ae60;
+    color: #fff;
+}
+.next-btn:hover { background: #2ecc71; }
+.pembahasan-btn {
+    background: #3498db;
+    color: #fff;
+}
+.pembahasan-btn:hover { background: #5dade2; }
